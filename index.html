@@ -127,7 +127,7 @@
             align-items: center;
             gap: 8px;
             flex: 1;
-            min-width: 120px;
+            min-width: 200px;
         }
 
         .date-input input, .time-input input {
@@ -149,6 +149,7 @@
             color: #333;
             white-space: nowrap;
             font-size: 14px;
+            min-width: 60px;
         }
 
         .alarm-row {
@@ -198,6 +199,7 @@
             font-size: 14px;
             outline: none;
             min-width: 120px;
+            flex: 1;
         }
 
         .date-range label {
@@ -205,6 +207,7 @@
             color: #333;
             font-size: 14px;
             white-space: nowrap;
+            min-width: 40px;
         }
 
         /* Alarm popup styles */
@@ -644,16 +647,24 @@
             .datetime-row {
                 flex-direction: column;
                 align-items: stretch;
+                gap: 10px;
             }
 
             .date-input, .time-input {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 5px;
+                flex-direction: row;
+                align-items: center;
+                gap: 8px;
+                min-width: auto;
             }
 
             .date-input input, .time-input input {
-                width: 100%;
+                width: auto;
+                flex: 1;
+            }
+
+            .date-input label, .time-input label {
+                min-width: 60px;
+                flex-shrink: 0;
             }
 
             .alarm-row {
@@ -673,12 +684,21 @@
             }
 
             .date-range {
-                flex-direction: column;
-                gap: 5px;
+                flex-direction: row;
+                gap: 8px;
+                flex-wrap: wrap;
+                align-items: center;
             }
 
             .date-range input[type="date"] {
-                width: 100%;
+                width: auto;
+                flex: 1;
+                min-width: 100px;
+            }
+
+            .date-range label {
+                flex-shrink: 0;
+                min-width: 35px;
             }
 
             .activity-item {
