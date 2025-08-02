@@ -15,7 +15,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
         }
 
         .container {
@@ -25,23 +25,24 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
+            width: 100%;
         }
 
         .header {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            padding: 30px;
+            padding: 20px;
             text-align: center;
             color: white;
         }
 
         .header h1 {
-            font-size: 2.5em;
+            font-size: 2em;
             margin-bottom: 10px;
             font-weight: 300;
         }
 
         .datetime {
-            font-size: 1.2em;
+            font-size: 1.1em;
             opacity: 0.9;
             margin-bottom: 20px;
         }
@@ -50,11 +51,12 @@
             position: relative;
             max-width: 500px;
             margin: 0 auto;
+            width: 100%;
         }
 
         .search-input {
             width: 100%;
-            padding: 15px 50px 15px 20px;
+            padding: 12px 40px 12px 15px;
             border: none;
             border-radius: 25px;
             font-size: 16px;
@@ -62,6 +64,7 @@
             backdrop-filter: blur(10px);
             outline: none;
             transition: all 0.3s ease;
+            box-sizing: border-box;
         }
 
         .search-input:focus {
@@ -74,7 +77,7 @@
             right: 15px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 20px;
+            font-size: 18px;
             color: #666;
             cursor: pointer;
             transition: color 0.3s ease;
@@ -85,16 +88,18 @@
         }
 
         .content {
-            padding: 30px;
+            padding: 20px;
         }
 
         .activity-input {
             background: #f8f9fa;
             border-radius: 15px;
-            padding: 20px;
+            padding: 15px;
             margin-bottom: 20px;
             border: 2px solid transparent;
             transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .activity-input:focus-within {
@@ -105,38 +110,101 @@
 
         .datetime-input {
             display: flex;
-            gap: 20px;
+            flex-direction: column;
+            gap: 15px;
             margin-bottom: 15px;
-            flex-wrap: wrap;
         }
 
-        .date-input, .time-input, .alarm-input {
+        .datetime-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .date-input, .time-input {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            flex: 1;
+            min-width: 120px;
         }
 
         .date-input input, .time-input input {
-            padding: 10px;
+            padding: 8px 10px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
             outline: none;
+            flex: 1;
+            min-width: 0;
         }
 
         .date-input input:focus, .time-input input:focus {
             border-color: #4facfe;
         }
 
-        .date-input label, .time-input label, .alarm-input label {
+        .date-input label, .time-input label {
             font-weight: 500;
             color: #333;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .alarm-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .alarm-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .alarm-input input[type="checkbox"] {
             width: 18px;
             height: 18px;
             cursor: pointer;
+        }
+
+        .alarm-input label {
+            font-weight: 500;
+            color: #333;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .delete-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-range {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-range input[type="date"] {
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            min-width: 120px;
+        }
+
+        .date-range label {
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+            white-space: nowrap;
         }
 
         /* Alarm popup styles */
@@ -147,12 +215,14 @@
             transform: translate(-50%, -50%);
             background: white;
             border-radius: 15px;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             z-index: 10000;
             border: 3px solid #f44336;
-            min-width: 400px;
+            min-width: 280px;
+            max-width: 90vw;
             text-align: center;
+            box-sizing: border-box;
         }
 
         .alarm-popup-overlay {
@@ -168,12 +238,12 @@
         .alarm-popup h3 {
             color: #f44336;
             margin-bottom: 15px;
-            font-size: 1.5em;
+            font-size: 1.3em;
         }
 
         .alarm-popup p {
             margin-bottom: 20px;
-            font-size: 1.1em;
+            font-size: 1em;
             color: #333;
         }
 
@@ -183,22 +253,25 @@
             border-radius: 8px;
             margin: 15px 0;
             border-left: 4px solid #4facfe;
+            text-align: left;
         }
 
         .alarm-buttons {
             display: flex;
-            gap: 15px;
+            flex-direction: column;
+            gap: 10px;
             justify-content: center;
         }
 
         .alarm-btn {
-            padding: 12px 24px;
+            padding: 12px 20px;
             border: none;
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            width: 100%;
         }
 
         .snooze-btn {
@@ -219,22 +292,14 @@
             background: #da190b;
         }
 
-        @media (max-width: 768px) {
-            .datetime-input {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .alarm-popup {
-                min-width: 300px;
-                margin: 20px;
-            }
+        .textarea-container {
+            margin-bottom: 15px;
         }
 
         .activity-text {
             width: 100%;
-            min-height: 100px;
-            padding: 15px;
+            min-height: 80px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
@@ -242,11 +307,49 @@
             resize: vertical;
             outline: none;
             transition: all 0.3s ease;
+            box-sizing: border-box;
         }
 
         .activity-text:focus {
             border-color: #4facfe;
             box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .input-save-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .input-save-btn:first-child {
+            background: #4facfe;
+            color: white;
+        }
+
+        .input-save-btn:first-child:hover {
+            background: #3d8bfe;
+        }
+
+        .input-save-btn:last-child {
+            background: #f44336;
+            color: white;
+        }
+
+        .input-save-btn:last-child:hover {
+            background: #da190b;
         }
 
         .activities-list {
@@ -258,7 +361,7 @@
         }
 
         .date-header {
-            font-size: 1.3em;
+            font-size: 1.2em;
             font-weight: 600;
             color: #4facfe;
             margin-bottom: 15px;
@@ -269,9 +372,9 @@
         .activity-item {
             background: white;
             border-radius: 12px;
-            padding: 20px;
+            padding: 15px;
             margin-bottom: 15px;
-            margin-left: 20px;
+            margin-left: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             border-left: 4px solid #4facfe;
             transition: all 0.3s ease;
@@ -289,10 +392,10 @@
 
         .activity-actions {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 10px;
+            right: 10px;
             display: flex;
-            gap: 8px;
+            gap: 5px;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -353,20 +456,19 @@
 
         .edit-datetime-input {
             display: flex;
-            gap: 30px;
+            flex-direction: column;
+            gap: 15px;
             margin-bottom: 15px;
             padding: 10px;
             background: #f8f9fa;
             border-radius: 8px;
-            flex-wrap: wrap;
-            align-items: center;
         }
 
         .edit-time-section, .edit-alarm-section {
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-shrink: 0;
+            flex-wrap: wrap;
         }
 
         .edit-time-section input[type="time"] {
@@ -375,6 +477,7 @@
             border-radius: 6px;
             font-size: 14px;
             outline: none;
+            flex: 1;
             min-width: 120px;
         }
 
@@ -409,7 +512,7 @@
 
         .edit-form textarea {
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
@@ -426,22 +529,11 @@
             box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
         }
 
-        @media (max-width: 768px) {
-            .edit-datetime-input {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 15px;
-            }
-            
-            .edit-time-section, .edit-alarm-section {
-                justify-content: space-between;
-            }
-        }
-
         .edit-buttons {
             display: flex;
             gap: 10px;
             justify-content: flex-end;
+            flex-wrap: wrap;
         }
 
         .save-edit-btn, .cancel-edit-btn {
@@ -451,6 +543,8 @@
             cursor: pointer;
             font-size: 14px;
             transition: all 0.3s ease;
+            flex: 1;
+            min-width: 80px;
         }
 
         .save-edit-btn {
@@ -482,25 +576,27 @@
             color: #333;
             line-height: 1.6;
             white-space: pre-line;
+            word-wrap: break-word;
         }
 
         .no-activities {
             text-align: center;
             color: #666;
             font-style: italic;
-            padding: 40px;
+            padding: 40px 20px;
         }
 
         .save-status {
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
             transition: all 0.3s ease;
             z-index: 1000;
+            max-width: 150px;
         }
 
         .save-status.saved {
@@ -519,18 +615,143 @@
             border-radius: 3px;
         }
 
+        /* Mobile-specific styles */
         @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+
+            .header {
+                padding: 15px;
+            }
+
             .header h1 {
-                font-size: 2em;
+                font-size: 1.8em;
             }
-            
+
+            .datetime {
+                font-size: 1em;
+            }
+
             .content {
-                padding: 20px;
+                padding: 15px;
             }
-            
-            .time-input {
+
+            .activity-input {
+                padding: 12px;
+            }
+
+            .datetime-row {
                 flex-direction: column;
                 align-items: stretch;
+            }
+
+            .date-input, .time-input {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 5px;
+            }
+
+            .date-input input, .time-input input {
+                width: 100%;
+            }
+
+            .alarm-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .alarm-input {
+                justify-content: space-between;
+            }
+
+            .delete-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .date-range {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .date-range input[type="date"] {
+                width: 100%;
+            }
+
+            .activity-item {
+                margin-left: 0;
+                padding: 12px;
+            }
+
+            .activity-actions {
+                position: static;
+                opacity: 1;
+                justify-content: center;
+                margin-top: 10px;
+                gap: 10px;
+            }
+
+            .alarm-popup {
+                margin: 10px;
+                padding: 15px;
+                min-width: auto;
+                width: calc(100vw - 20px);
+            }
+
+            .alarm-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .edit-datetime-input {
+                gap: 10px;
+            }
+
+            .edit-buttons {
+                flex-direction: column;
+            }
+
+            .save-status {
+                top: 10px;
+                right: 10px;
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .input-save-btn {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.6em;
+            }
+
+            .search-input {
+                font-size: 14px;
+                padding: 10px 35px 10px 12px;
+            }
+
+            .activity-text {
+                font-size: 14px;
+            }
+
+            .date-header {
+                font-size: 1.1em;
+            }
+
+            .activity-time {
+                font-size: 1em;
             }
         }
     </style>
@@ -552,29 +773,41 @@
         <div class="content">
             <div class="activity-input">
                 <div class="datetime-input">
-                    <div class="date-input">
-                        <input type="date" id="activityDate" required>
-                        <label for="activityDate">📅 Date:</label>
+                    <div class="datetime-row">
+                        <div class="date-input">
+                            <label for="activityDate">📅 Date:</label>
+                            <input type="date" id="activityDate" required>
+                        </div>
+                        <div class="time-input">
+                            <label for="activityTime">🕐 Time:</label>
+                            <input type="time" id="activityTime" required>
+                        </div>
                     </div>
-                    <div class="time-input">
-                        <input type="time" id="activityTime" required>
-                        <label for="activityTime">🕐 Time:</label>
-                    </div>
-                    <div class="alarm-input">
-                        <input type="checkbox" id="alarmToggle">
-                        <label for="alarmToggle">🔔 Alarm:</label>
-        <label for="deleteActivityToggle" style="margin-left: 20px;">🗑️ Delete activity:</label>
-        <input type="checkbox" id="deleteActivityToggle">
-        <label for="fromDate" style="margin-left: 20px;">📆 From:</label>
-        <input type="date" id="fromDate">
-        <label for="toDate">To:</label>
-        <input type="date" id="toDate">
+                    <div class="alarm-row">
+                        <div class="alarm-input">
+                            <label for="alarmToggle">🔔 Alarm:</label>
+                            <input type="checkbox" id="alarmToggle">
+                        </div>
+                        <div class="delete-section">
+                            <div class="alarm-input">
+                                <label for="deleteActivityToggle">🗑️ Delete activity:</label>
+                                <input type="checkbox" id="deleteActivityToggle">
+                            </div>
+                            <div class="date-range">
+                                <label for="fromDate">📆 From:</label>
+                                <input type="date" id="fromDate">
+                                <label for="toDate">To:</label>
+                                <input type="date" id="toDate">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="textarea-container">
                     <textarea class="activity-text" id="activityText" placeholder="Enter your activity or reminder here..."></textarea>
-                    <button class="input-save-btn" id="inputSaveBtn" onclick="saveNewActivity()">💾 Save</button>
-    <button class="input-save-btn" id="deleteRangeBtn" onclick="deleteActivitiesInRange()">🗑️ Delete Activities</button>
+                    <div class="button-container">
+                        <button class="input-save-btn" id="inputSaveBtn" onclick="saveNewActivity()">💾 Save</button>
+                        <button class="input-save-btn" id="deleteRangeBtn" onclick="deleteActivitiesInRange()">🗑️ Delete Activities</button>
+                    </div>
                 </div>
             </div>
 
@@ -1318,10 +1551,7 @@
             }
         }
 
-        
-        
         // Delete activities within date range with confirmation
-        
         function deleteActivitiesInRange() {
             const from = document.getElementById('fromDate').value;
             const to = document.getElementById('toDate').value;
@@ -1370,7 +1600,6 @@
                 alert("No activities found in the selected date range.");
             }
         }
-
 
         function cancelEdit(date, index) {
             if (!activities[date] || !activities[date][index]) return;
