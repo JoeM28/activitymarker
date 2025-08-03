@@ -152,54 +152,84 @@
             min-width: 60px;
         }
 
-        .alarm-row {
+        .control-row {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
             align-items: center;
         }
 
-        .alarm-input {
+        .alarm-input, .delete-toggle-input {
             display: flex;
             align-items: center;
             gap: 8px;
+            flex: 1;
         }
 
-        .alarm-input input[type="checkbox"] {
+        .alarm-input input[type="checkbox"], .delete-toggle-input input[type="checkbox"] {
             width: 18px;
             height: 18px;
             cursor: pointer;
         }
 
-        .alarm-input label {
+        .alarm-input label, .delete-toggle-input label {
+            font-weight: 500;
+            color: #333;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+        
+        .delete-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .delete-options-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .delete-past-input, .delete-by-date-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .delete-past-input input, .delete-by-date-input input {
+            width: 18px;
+            height: 18px;
+        }
+
+        .delete-past-input label, .delete-by-date-input label {
             font-weight: 500;
             color: #333;
             white-space: nowrap;
             font-size: 14px;
         }
 
-        .delete-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-        }
-
         .date-range {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
+            width: 100%;
         }
 
         .date-range input[type="date"] {
-            padding: 8px 10px;
+            padding: 8px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
             outline: none;
-            min-width: 120px;
             flex: 1;
+            min-width: 90px;
         }
 
         .date-range label {
@@ -207,7 +237,8 @@
             color: #333;
             font-size: 14px;
             white-space: nowrap;
-            min-width: 40px;
+            min-width: 30px;
+            text-align: right;
         }
 
         /* Alarm popup styles */
@@ -667,38 +698,46 @@
                 flex-shrink: 0;
             }
 
-            .alarm-row {
+            .control-row {
                 flex-direction: column;
                 align-items: stretch;
                 gap: 10px;
             }
 
-            .alarm-input {
+            .alarm-input, .delete-toggle-input {
                 justify-content: space-between;
+                flex: none;
             }
 
-            .delete-section {
+            .delete-options {
+                padding: 8px;
+            }
+
+            .delete-options-row {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 10px;
+                gap: 8px;
+            }
+
+            .delete-past-input, .delete-by-date-input {
+                justify-content: space-between;
             }
 
             .date-range {
                 flex-direction: row;
                 gap: 8px;
-                flex-wrap: wrap;
-                align-items: center;
+                flex-wrap: nowrap;
+                justify-content: space-between;
             }
 
             .date-range input[type="date"] {
-                width: auto;
                 flex: 1;
-                min-width: 100px;
+                min-width: 0;
             }
-
+            
             .date-range label {
                 flex-shrink: 0;
-                min-width: 35px;
+                min-width: 25px;
             }
 
             .activity-item {
@@ -803,22 +842,34 @@
                             <input type="time" id="activityTime" required>
                         </div>
                     </div>
-                    <div class="alarm-row">
+                    
+                    <div class="control-row">
                         <div class="alarm-input">
-                            <label for="alarmToggle">🔔 Alarm:</label>
+                            <label for="alarmToggle">🔔 Set Alarm:</label>
                             <input type="checkbox" id="alarmToggle">
                         </div>
-                        <div class="delete-section">
-                            <div class="alarm-input">
-                                <label for="deleteActivityToggle">🗑️ Delete activity:</label>
-                                <input type="checkbox" id="deleteActivityToggle">
+                        <div class="delete-toggle-input">
+                            <label for="deleteActivityToggle">🗑️ Delete activity:</label>
+                            <input type="checkbox" id="deleteActivityToggle">
+                        </div>
+                    </div>
+                    
+                    <div class="delete-options" id="deleteOptions" style="display:none;">
+                        <div class="delete-options-row">
+                            <div class="delete-past-input">
+                                <label for="deletePastToggle">🗑️ Delete Past Activity:</label>
+                                <input type="checkbox" id="deletePastToggle">
                             </div>
-                            <div class="date-range">
-                                <label for="fromDate">📆 From:</label>
-                                <input type="date" id="fromDate">
-                                <label for="toDate">To:</label>
-                                <input type="date" id="toDate">
+                            <div class="delete-by-date-input">
+                                <label for="deleteByDateToggle">📅 Delete By Date:</label>
+                                <input type="checkbox" id="deleteByDateToggle">
                             </div>
+                        </div>
+                        <div class="date-range" id="dateRange" style="display:none;">
+                            <label for="fromDate">From:</label>
+                            <input type="date" id="fromDate">
+                            <label for="toDate">To:</label>
+                            <input type="date" id="toDate">
                         </div>
                     </div>
                 </div>
@@ -826,7 +877,7 @@
                     <textarea class="activity-text" id="activityText" placeholder="Enter your activity or reminder here..."></textarea>
                     <div class="button-container">
                         <button class="input-save-btn" id="inputSaveBtn" onclick="saveNewActivity()">💾 Save</button>
-                        <button class="input-save-btn" id="deleteRangeBtn" onclick="deleteActivitiesInRange()">🗑️ Delete Activities</button>
+                        <button class="input-save-btn" id="deleteRangeBtn" onclick="handleDeleteActivities()">🗑️ Delete Activities</button>
                     </div>
                 </div>
             </div>
@@ -843,47 +894,38 @@
         let activities = {};
         let currentDate = '';
         let saveInterval;
-        let alarmTimers = new Map(); // Store active alarm timers
+        let alarmTimers = new Map();
 
-        // Initialize the app
         function init() {
             updateDateTime();
-            loadActivities(); // This now includes setupAlarmSystem()
+            loadActivities();
             setupEventListeners();
             startAutoSave();
             
-            // Set current date and time as default
             setCurrentDate();
             setCurrentTime();
-            
-            console.log('Activity Planner initialized');
         }
 
-        // Set current date in the input field
         function setCurrentDate() {
             const now = new Date();
-            // Ensure we're using the local date, not UTC
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const day = String(now.getDate()).padStart(2, '0');
-            const dateString = `${year}-${month}-${day}`; // YYYY-MM-DD format
+            const dateString = `${year}-${month}-${day}`;
             
             document.getElementById('activityDate').value = dateString;
         }
 
-        // Set current time in the input field
         function setCurrentTime() {
             const now = new Date();
             const timeString = now.toTimeString().slice(0, 5);
             document.getElementById('activityTime').value = timeString;
         }
 
-        // Get selected time from input
         function getSelectedTime() {
             return document.getElementById('activityTime').value;
         }
 
-        // Format time to 12-hour format with AM/PM
         function formatTime12Hour(time24) {
             const [hours, minutes] = time24.split(':');
             const hour = parseInt(hours);
@@ -892,7 +934,6 @@
             return `${hour12}:${minutes} ${ampm}`;
         }
 
-        // Update date and time display
         function updateDateTime() {
             const now = new Date();
             currentDate = formatDate(now);
@@ -903,7 +944,6 @@
             setTimeout(updateDateTime, 1000);
         }
 
-        // Format date as MM/DD/YY
         function formatDate(date) {
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
@@ -911,25 +951,23 @@
             return `${month}/${day}/${year}`;
         }
 
-        // Setup event listeners
         function setupEventListeners() {
             const activityText = document.getElementById('activityText');
             const activityDate = document.getElementById('activityDate');
             const activityTime = document.getElementById('activityTime');
             const alarmToggle = document.getElementById('alarmToggle');
             const searchInput = document.getElementById('searchInput');
+            const deleteActivityToggle = document.getElementById('deleteActivityToggle');
+            const deletePastToggle = document.getElementById('deletePastToggle');
+            const deleteByDateToggle = document.getElementById('deleteByDateToggle');
+            const deleteOptions = document.getElementById('deleteOptions');
+            const dateRange = document.getElementById('dateRange');
 
-            // Auto-save when typing (for freeform text)
             activityText.addEventListener('input', handleActivityChange);
             activityDate.addEventListener('change', handleActivityChange);
             activityTime.addEventListener('change', handleActivityChange);
+            alarmToggle.addEventListener('change', function() {});
 
-            // Alarm toggle - removed status text functionality
-            alarmToggle.addEventListener('change', function() {
-                // Just for visual feedback, no status text needed
-            });
-
-            // Search functionality
             searchInput.addEventListener('input', searchActivities);
             searchInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -937,7 +975,6 @@
                 }
             });
 
-            // Enter key to save activity
             activityText.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -945,20 +982,36 @@
                 }
             });
 
-            // Save before closing browser
             window.addEventListener('beforeunload', function(e) {
                 saveToStorage();
                 showSaveStatus('saved');
             });
+            
+            deleteActivityToggle.addEventListener('change', () => {
+                deleteOptions.style.display = deleteActivityToggle.checked ? 'flex' : 'none';
+            });
+            
+            deletePastToggle.addEventListener('change', () => {
+                if (deletePastToggle.checked) {
+                    deleteByDateToggle.checked = false;
+                    dateRange.style.display = 'none';
+                }
+            });
+            
+            deleteByDateToggle.addEventListener('change', () => {
+                if (deleteByDateToggle.checked) {
+                    deletePastToggle.checked = false;
+                    dateRange.style.display = 'flex';
+                } else {
+                    dateRange.style.display = 'none';
+                }
+            });
         }
 
-        // Handle activity input changes
         function handleActivityChange() {
-            // Just save to storage for persistence, don't auto-display
             saveToStorage();
         }
 
-        // Save new activity function (called by save button)
         function saveNewActivity() {
             const selectedDate = document.getElementById('activityDate').value;
             const selectedTime = getSelectedTime();
@@ -970,7 +1023,6 @@
                 return;
             }
 
-            // Convert selected date to MM/DD/YY format for storage
             const dateObj = new Date(selectedDate + 'T00:00:00');
             const storageDate = formatDate(dateObj);
 
@@ -978,99 +1030,78 @@
                 activities[storageDate] = [];
             }
 
-            // Check if activity already exists for this time on the selected date
             const existingIndex = activities[storageDate].findIndex(activity => activity.time === selectedTime);
             
             if (existingIndex !== -1) {
-                // Append new activity as a bullet point to existing activity
                 const existingText = activities[storageDate][existingIndex].text;
                 if (existingText.includes('• ')) {
                     activities[storageDate][existingIndex].text = existingText + '\n• ' + text;
                 } else {
                     activities[storageDate][existingIndex].text = '• ' + existingText + '\n• ' + text;
                 }
-                // Update alarm setting if new activity has alarm
                 if (alarmEnabled) {
                     activities[storageDate][existingIndex].alarm = true;
                 }
             } else {
-                // Add new activity with selected time and alarm setting
                 activities[storageDate].push({ 
                     time: selectedTime, 
                     text: text,
                     alarm: alarmEnabled,
-                    date: selectedDate // Store original date for alarm calculations
+                    date: selectedDate
                 });
             }
 
-            // Sort activities by time
             activities[storageDate].sort((a, b) => a.time.localeCompare(b.time));
 
             saveToStorage();
             displayActivities();
             showSaveStatus('saved');
             
-            // Set up alarms for new activity if enabled
             if (alarmEnabled) {
                 setupAlarmsForActivity(storageDate, selectedTime, text, selectedDate);
             }
             
-            // Clear inputs for next activity
             document.getElementById('activityText').value = '';
             document.getElementById('alarmToggle').checked = false;
-            
-            // Reset to current time for next entry
             setCurrentTime();
         }
 
-        // Save current activity (legacy function for Enter key)
         function saveCurrentActivity() {
             saveNewActivity();
         }
 
-        // Get next available time slot
         function getNextAvailableTime() {
             const now = new Date();
-            now.setMinutes(now.getMinutes() + 30); // Add 30 minutes
+            now.setMinutes(now.getMinutes() + 30);
             return now.toTimeString().slice(0, 5);
         }
 
-        // Display current freeform text being typed
         function displayCurrentActivity() {
             const time = document.getElementById('activityTime').value;
             const text = document.getElementById('activityText').value.trim();
             
             if (!time || !text) return;
 
-            // Update the activities data structure but don't clear the input
             if (!activities[currentDate]) {
                 activities[currentDate] = [];
             }
 
-            // Find if there's already an activity for this time
             const existingIndex = activities[currentDate].findIndex(activity => activity.time === time);
             
             if (existingIndex !== -1) {
-                // Update existing activity
                 activities[currentDate][existingIndex].text = text;
             } else {
-                // Add new activity
                 activities[currentDate].push({ time, text });
             }
 
-            // Sort activities by time
             activities[currentDate].sort((a, b) => a.time.localeCompare(b.time));
 
             displayActivities();
         }
 
-        // Display activities for current date
         function displayActivities(searchTerm = '') {
             const activitiesList = document.getElementById('activitiesList');
-            
-            // Get all dates that have activities
             const allDates = Object.keys(activities).sort((a, b) => {
-                // Convert MM/DD/YY to Date objects for proper sorting
                 const dateA = new Date('20' + a.split('/')[2], a.split('/')[0] - 1, a.split('/')[1]);
                 const dateB = new Date('20' + b.split('/')[2], b.split('/')[0] - 1, b.split('/')[1]);
                 return dateA - dateB;
@@ -1115,21 +1146,20 @@
                                 <div class="activity-item editing">
                                     <div class="activity-time">${time12Hour}</div>
                                     
-<div class="edit-form">
-    <div class="edit-datetime-input">
-        <div class="edit-time-section">
-            <label for="editTime${date}_${originalIndex}">🕐 Time:</label>
-            <input type="time" class="edit-time-input" value="${activity.time}" id="editTime${date}_${originalIndex}">
-        </div>
-        <div class="edit-alarm-section">
-            <label for="editAlarm${date}_${originalIndex}">🔔 Alarm:</label>
-            <input type="checkbox" id="editAlarm${date}_${originalIndex}" ${activity.alarm ? 'checked' : ''}>
-        </div>
-    </div>
-    <div class="edit-textarea-container">
-        <textarea class="edit-text-input" id="editText${date}_${originalIndex}">${activity.text}</textarea>
-    </div>
-
+                                    <div class="edit-form">
+                                        <div class="edit-datetime-input">
+                                            <div class="edit-time-section">
+                                                <label for="editTime${date}_${originalIndex}">🕐 Time:</label>
+                                                <input type="time" class="edit-time-input" value="${activity.time}" id="editTime${date}_${originalIndex}">
+                                            </div>
+                                            <div class="edit-alarm-section">
+                                                <label for="editAlarm${date}_${originalIndex}">🔔 Alarm:</label>
+                                                <input type="checkbox" id="editAlarm${date}_${originalIndex}" ${activity.alarm ? 'checked' : ''}>
+                                            </div>
+                                        </div>
+                                        <div class="edit-textarea-container">
+                                            <textarea class="edit-text-input" id="editText${date}_${originalIndex}">${activity.text}</textarea>
+                                        </div>
                                         <div class="edit-buttons">
                                             <button class="save-edit-btn" onclick="saveEdit('${date}', ${originalIndex})">Save</button>
                                             <button class="cancel-edit-btn" onclick="cancelEdit('${date}', ${originalIndex})">Cancel</button>
@@ -1165,13 +1195,11 @@
             activitiesList.innerHTML = activitiesHTML;
         }
 
-        // Search activities
         function searchActivities() {
             const searchTerm = document.getElementById('searchInput').value.trim();
             displayActivities(searchTerm);
         }
 
-        // Load activities from storage
         function loadActivities() {
             const saved = localStorage.getItem('activityPlanner');
             if (saved) {
@@ -1179,26 +1207,21 @@
             }
             displayActivities();
             
-            // Setup alarms for loaded activities
             setupAlarmSystem();
         }
 
-        // Save activities to storage
         function saveToStorage() {
             localStorage.setItem('activityPlanner', JSON.stringify(activities));
             showSaveStatus('saved');
         }
 
-        // Start auto-save interval
         function startAutoSave() {
-            // Auto-save every 1 minute (60 seconds)
             saveInterval = setInterval(() => {
                 showSaveStatus('saving');
                 saveToStorage();
-            }, 60000); // Save every 60 seconds (1 minute)
+            }, 60000);
         }
 
-        // Show save status
         function showSaveStatus(status) {
             const saveStatus = document.getElementById('saveStatus');
             saveStatus.className = `save-status ${status}`;
@@ -1214,46 +1237,31 @@
             }
         }
 
-        // Initialize app when page loads
         window.addEventListener('load', init);
 
-        // Alarm System Functions
         function setupAlarmSystem() {
-            console.log('Setting up alarm system...');
-            console.log('Activities loaded:', activities);
-            
-            // Check for existing alarms on page load
             Object.keys(activities).forEach(date => {
-                console.log(`Checking date: ${date}`);
                 activities[date].forEach((activity, index) => {
-                    console.log(`Activity ${index}:`, activity);
                     if (activity.alarm && activity.date) {
-                        console.log(`Setting up alarms for: ${activity.text}`);
                         setupAlarmsForActivity(date, activity.time, activity.text, activity.date);
                     } else if (activity.alarm && !activity.date) {
-                        // For older activities without stored date, reconstruct from storage date
                         const reconstructedDate = convertStorageDateToISO(date);
                         if (reconstructedDate) {
-                            console.log(`Reconstructing date for: ${activity.text}`);
-                            activity.date = reconstructedDate; // Update the activity
+                            activity.date = reconstructedDate;
                             setupAlarmsForActivity(date, activity.time, activity.text, reconstructedDate);
-                            saveToStorage(); // Save the updated activity
+                            saveToStorage();
                         }
                     }
                 });
             });
-            
-            console.log('Alarm system setup complete');
         }
 
-        // Convert MM/DD/YY to YYYY-MM-DD format
         function convertStorageDateToISO(storageDate) {
             try {
                 const [month, day, year] = storageDate.split('/');
-                const fullYear = '20' + year; // Assumes 20xx years
+                const fullYear = '20' + year;
                 return `${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
             } catch (e) {
-                console.error('Error converting date:', storageDate);
                 return null;
             }
         }
@@ -1262,24 +1270,12 @@
             const now = new Date();
             const activityDateTime = new Date(originalDate + 'T' + time);
             
-            console.log(`=== Setting up alarms ===`);
-            console.log(`Activity: ${text}`);
-            console.log(`Storage Date: ${storageDate}`);
-            console.log(`Original Date: ${originalDate}`);
-            console.log(`Time: ${time}`);
-            console.log(`Activity DateTime: ${activityDateTime}`);
-            console.log(`Current Time: ${now}`);
-            console.log(`Is Future?: ${activityDateTime > now}`);
-            
-            // Only set alarms for future activities
             if (activityDateTime <= now) {
-                console.log('❌ Activity is in the past, no alarms set');
                 return;
             }
             
             const activityId = `${storageDate}_${time}_${Date.now()}`;
             
-            // Clear existing alarms for this activity
             if (alarmTimers.has(activityId)) {
                 alarmTimers.get(activityId).forEach(timer => clearTimeout(timer));
                 alarmTimers.delete(activityId);
@@ -1287,75 +1283,49 @@
             
             const timers = [];
             
-            // For testing - set up a 30-second test alarm
-            const testTime = new Date(now.getTime() + 30000); // 30 seconds from now
-            console.log(`🧪 TEST: Setting 30-second test alarm for ${testTime}`);
-            timers.push(setTimeout(() => {
-                console.log('🧪 TEST ALARM FIRING!');
-                showAlarmPopup(storageDate, time, text, 'TEST - 30 seconds');
-            }, 30000));
-            
-            // Set up 15 minute warning
             const fifteenMinBefore = new Date(activityDateTime.getTime() - 15 * 60 * 1000);
             if (fifteenMinBefore > now) {
                 const delay = fifteenMinBefore.getTime() - now.getTime();
-                console.log(`⏰ 15-min alarm set for ${delay}ms from now (${fifteenMinBefore})`);
                 timers.push(setTimeout(() => {
-                    console.log('⏰ 15-minute alarm firing');
                     showAlarmPopup(storageDate, time, text, '15 minutes');
                 }, delay));
             }
             
-            // Set up 10 minute warning
             const tenMinBefore = new Date(activityDateTime.getTime() - 10 * 60 * 1000);
             if (tenMinBefore > now) {
                 const delay = tenMinBefore.getTime() - now.getTime();
-                console.log(`⏰ 10-min alarm set for ${delay}ms from now (${tenMinBefore})`);
                 timers.push(setTimeout(() => {
-                    console.log('⏰ 10-minute alarm firing');
                     showAlarmPopup(storageDate, time, text, '10 minutes');
                 }, delay));
             }
             
-            // Set up 5 minute warning
             const fiveMinBefore = new Date(activityDateTime.getTime() - 5 * 60 * 1000);
             if (fiveMinBefore > now) {
                 const delay = fiveMinBefore.getTime() - now.getTime();
-                console.log(`⏰ 5-min alarm set for ${delay}ms from now (${fiveMinBefore})`);
                 timers.push(setTimeout(() => {
-                    console.log('⏰ 5-minute alarm firing');
                     showAlarmPopup(storageDate, time, text, '5 minutes');
                 }, delay));
             }
             
-            // Set up exact time alarm
             if (activityDateTime > now) {
                 const delay = activityDateTime.getTime() - now.getTime();
-                console.log(`⏰ Exact time alarm set for ${delay}ms from now (${activityDateTime})`);
                 timers.push(setTimeout(() => {
-                    console.log('⏰ Exact time alarm firing');
                     showAlarmPopup(storageDate, time, text, 'now');
                 }, delay));
             }
             
-            // Store timers
             alarmTimers.set(activityId, timers);
-            console.log(`✅ Set ${timers.length} alarms for activity: ${activityId}`);
-            console.log(`=== End alarm setup ===`);
         }
 
         function showAlarmPopup(storageDate, time, text, timeFrame) {
-            // Create overlay
             const overlay = document.createElement('div');
             overlay.className = 'alarm-popup-overlay';
             
-            // Create popup
             const popup = document.createElement('div');
             popup.className = 'alarm-popup';
             
             const timeFrameText = timeFrame === 'now' ? 'right now!' : `in ${timeFrame}`;
             
-            // Create unique IDs for this popup to avoid conflicts
             const popupId = `popup_${Date.now()}`;
             
             popup.innerHTML = `
@@ -1376,13 +1346,10 @@
                 </div>
             `;
             
-            // Add to page
             document.body.appendChild(overlay);
             document.body.appendChild(popup);
             
-            // Play notification sound and show browser notification
             try {
-                // Browser notification
                 if ("Notification" in window) {
                     if (Notification.permission === "granted") {
                         new Notification("Activity Reminder", {
@@ -1401,7 +1368,6 @@
                     }
                 }
                 
-                // Audio beep
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
@@ -1418,28 +1384,20 @@
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.5);
             } catch (e) {
-                console.log("Audio/notification not supported");
             }
-            
-            // Debug log
-            console.log(`Alarm popup shown for ${storageDate} at ${time}: ${text} (${timeFrameText})`);
         }
 
         function snoozeAlarm(storageDate, time, text, timeFrame) {
-            // Close current popup
             closeAlarmPopup();
             
-            // Set snooze for 5 minutes
             setTimeout(() => {
                 showAlarmPopup(storageDate, time, text, timeFrame);
-            }, 5 * 60 * 1000); // 5 minutes
+            }, 5 * 60 * 1000);
         }
 
         function cancelAlarm(storageDate, time) {
-            // Close popup
             closeAlarmPopup();
             
-            // Remove alarm from activity
             if (activities[storageDate]) {
                 const activity = activities[storageDate].find(a => a.time === time);
                 if (activity) {
@@ -1448,7 +1406,6 @@
                 }
             }
             
-            // Clear timers
             const activityId = `${storageDate}_${time}`;
             if (alarmTimers.has(activityId)) {
                 alarmTimers.get(activityId).forEach(timer => clearTimeout(timer));
@@ -1463,14 +1420,12 @@
             if (popup) popup.remove();
         }
 
-        // Save specific activity function
         function saveActivity(date, index) {
             if (!activities[date] || !activities[date][index]) return;
             
             saveToStorage();
             showSaveStatus('saved');
             
-            // Visual feedback
             const activityItems = document.querySelectorAll('.activity-item');
             if (activityItems[index]) {
                 activityItems[index].style.transform = 'scale(0.98)';
@@ -1483,28 +1438,20 @@
             }
         }
 
-        // Edit activity function
         function editActivity(date, index) {
             if (!activities[date] || !activities[date][index]) return;
             
-            console.log(`Editing activity:`, activities[date][index]);
-            
-            // Set editing flag
             activities[date][index].editing = true;
             displayActivities();
             
-            // Ensure alarm checkbox is visible after render
             setTimeout(() => {
                 const alarmCheckbox = document.getElementById(`editAlarm${date}_${index}`);
                 if (alarmCheckbox) {
-                    console.log('Alarm checkbox found and visible');
                 } else {
-                    console.error('Alarm checkbox not found!');
                 }
             }, 100);
         }
 
-        // Save edited activity
         function saveEdit(date, index) {
             if (!activities[date] || !activities[date][index]) return;
             
@@ -1517,11 +1464,9 @@
                 return;
             }
             
-            // Get the original date for alarm setup
             const originalActivity = activities[date][index];
             const originalDate = originalActivity.date || convertStorageDateToISO(date);
             
-            // Check if new time conflicts with another activity (excluding current one)
             const conflictIndex = activities[date].findIndex((activity, i) => 
                 i !== index && activity.time === newTime
             );
@@ -1530,48 +1475,86 @@
                 if (!confirm('An activity already exists at this time. Do you want to merge them?')) {
                     return;
                 }
-                // Merge the activities
                 activities[date][conflictIndex].text += '\n' + newText;
-                // Keep alarm setting from the one being merged
                 if (newAlarm) {
                     activities[date][conflictIndex].alarm = true;
                     activities[date][conflictIndex].date = originalDate;
                 }
-                // Remove the current activity
                 activities[date].splice(index, 1);
             } else {
-                // Update the activity
                 activities[date][index].time = newTime;
                 activities[date][index].text = newText;
                 activities[date][index].alarm = newAlarm;
                 activities[date][index].date = originalDate;
             }
             
-            // Remove editing flag from all activities
             activities[date].forEach(activity => delete activity.editing);
             
-            // Sort activities by time
             activities[date].sort((a, b) => a.time.localeCompare(b.time));
             
             saveToStorage();
             displayActivities();
             
-            // Setup or clear alarms based on new setting
             if (newAlarm && originalDate) {
-                console.log(`Setting up alarms for edited activity: ${newText}`);
                 setupAlarmsForActivity(date, newTime, newText, originalDate);
             } else {
-                // Clear existing alarms for this activity
                 const activityId = `${date}_${newTime}`;
                 if (alarmTimers.has(activityId)) {
-                    console.log(`Clearing alarms for: ${newText}`);
                     alarmTimers.get(activityId).forEach(timer => clearTimeout(timer));
                     alarmTimers.delete(activityId);
                 }
             }
         }
 
-        // Delete activities within date range with confirmation
+        function handleDeleteActivities() {
+            const deletePastToggle = document.getElementById('deletePastToggle');
+            const deleteByDateToggle = document.getElementById('deleteByDateToggle');
+
+            if (deletePastToggle.checked) {
+                deletePastActivities();
+            } else if (deleteByDateToggle.checked) {
+                deleteActivitiesInRange();
+            } else {
+                alert("Please select a deletion option.");
+            }
+        }
+
+        function deletePastActivities() {
+            if (!confirm("Are you sure you want to delete all activities up to yesterday? This action cannot be undone.")) {
+                return;
+            }
+
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+
+            const formatDateKey = (dateObj) => {
+                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                const year = String(dateObj.getFullYear()).slice(-2);
+                return `${month}/${day}/${year}`;
+            };
+            
+            let dateCursor = new Date(1970, 0, 1); // Start from a very old date
+            let deleted = false;
+            while (dateCursor <= yesterday) {
+                const key = formatDateKey(dateCursor);
+                if (activities.hasOwnProperty(key)) {
+                    delete activities[key];
+                    deleted = true;
+                }
+                dateCursor.setDate(dateCursor.getDate() + 1);
+            }
+
+            if (deleted) {
+                saveToStorage();
+                displayActivities();
+                alert("Past activities were deleted.");
+            } else {
+                alert("No past activities found to delete.");
+            }
+        }
+
         function deleteActivitiesInRange() {
             const from = document.getElementById('fromDate').value;
             const to = document.getElementById('toDate').value;
@@ -1624,12 +1607,10 @@
         function cancelEdit(date, index) {
             if (!activities[date] || !activities[date][index]) return;
             
-            // Remove editing flag
             delete activities[date][index].editing;
             displayActivities();
         }
 
-        // Delete activity function
         function deleteActivity(date, index) {
             if (!activities[date] || !activities[date][index]) return;
             
@@ -1637,7 +1618,6 @@
             if (confirm(`Are you sure you want to delete the activity at ${formatTime12Hour(activity.time)} on ${date}?\n\n"${activity.text}"`)) {
                 activities[date].splice(index, 1);
                 
-                // If no activities left for this date, remove the date entry
                 if (activities[date].length === 0) {
                     delete activities[date];
                 }
@@ -1645,10 +1625,9 @@
                 saveToStorage();
                 showSaveStatus('saved');
                 
-                // Refresh the webpage to show the deletion
                 setTimeout(() => {
                     location.reload();
-                }, 500); // Small delay to show the "saved" message
+                }, 500);
             }
         }
     </script>
