@@ -38,18 +38,18 @@
         .header h1 {
             font-size: 2em;
             margin-bottom: 10px;
-            font-weight: bold; /* Changed to bold */
-            color: black; /* Changed to black */
+            font-weight: bold;
+            color: black;
         }
 
         .datetime {
             font-size: 1.1em;
             opacity: 0.9;
             margin-bottom: 20px;
-            display: flex; /* Made it a flex container */
-            justify-content: center; /* Centered horizontally */
+            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 10px; /* Added space between date and time */
+            gap: 10px;
         }
 
         .search-container {
@@ -230,7 +230,7 @@
         .date-range input[type="date"] {
             padding: 8px;
             border: 1px solid #ddd;
-            border-radius: 8-x;
+            border-radius: 8px;
             font-size: 14px;
             outline: none;
             flex: 1;
@@ -729,20 +729,22 @@
             }
 
             .date-range {
-                flex-direction: row;
-                gap: 8px;
+                display: flex;
                 flex-wrap: nowrap;
-                justify-content: space-between;
+                align-items: center;
+                gap: 5px;
             }
 
             .date-range input[type="date"] {
                 flex: 1;
                 min-width: 0;
+                padding: 6px 8px; /* Squeezed padding */
             }
             
             .date-range label {
                 flex-shrink: 0;
                 min-width: 25px;
+                text-align: center;
             }
 
             .activity-item {
@@ -866,14 +868,13 @@
                                 <input type="checkbox" id="deletePastToggle">
                             </div>
                             <div class="delete-by-date-input">
-                                <label for="deleteByDateToggle">📅 Delete By Date:</label>
+                                <label for="deleteByDateToggle">📅 Delete By Date Range:</label>
                                 <input type="checkbox" id="deleteByDateToggle">
                             </div>
                         </div>
                         <div class="date-range" id="dateRange" style="display:none;">
-                            <label for="fromDate">From:</label>
                             <input type="date" id="fromDate">
-                            <label for="toDate">To:</label>
+                            <label for="toDate">To</label>
                             <input type="date" id="toDate">
                         </div>
                     </div>
