@@ -230,7 +230,7 @@
         .date-range input[type="date"] {
             padding: 8px;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 8-x;
             font-size: 14px;
             outline: none;
             flex: 1;
@@ -729,22 +729,20 @@
             }
 
             .date-range {
-                display: flex;
+                flex-direction: row;
+                gap: 8px;
                 flex-wrap: nowrap;
-                align-items: center;
-                gap: 5px;
+                justify-content: space-between;
             }
 
             .date-range input[type="date"] {
                 flex: 1;
                 min-width: 0;
-                padding: 6px 8px; /* Squeezed padding */
             }
             
             .date-range label {
                 flex-shrink: 0;
                 min-width: 25px;
-                text-align: center;
             }
 
             .activity-item {
@@ -868,7 +866,7 @@
                                 <input type="checkbox" id="deletePastToggle">
                             </div>
                             <div class="delete-by-date-input">
-                                <label for="deleteByDateToggle">📅 Delete By Date Range:</label>
+                                <label for="deleteByDateToggle">📅 Delete by Date Range:</label>
                                 <input type="checkbox" id="deleteByDateToggle">
                             </div>
                         </div>
