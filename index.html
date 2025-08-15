@@ -503,14 +503,14 @@
             border-radius: 8px;
         }
 
-        .edit-time-section, .edit-alarm-section {
+        .edit-time-section, .edit-alarm-section, .edit-date-section {
             display: flex;
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
         }
 
-        .edit-time-section input[type="time"] {
+        .edit-time-section input[type="time"], .edit-date-section input[type="date"] {
             padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -520,11 +520,11 @@
             min-width: 120px;
         }
 
-        .edit-time-section input[type="time"]:focus {
+        .edit-time-section input[type="time"]:focus, .edit-date-section input[type="date"]:focus {
             border-color: #4facfe;
         }
 
-        .edit-time-section label, .edit-alarm-section label {
+        .edit-time-section label, .edit-alarm-section label, .edit-date-section label {
             font-weight: 500;
             color: #333;
             white-space: nowrap;
@@ -866,13 +866,14 @@
                                 <input type="checkbox" id="deletePastToggle">
                             </div>
                             <div class="delete-by-date-input">
-                                <label for="deleteByDateToggle">📅 Delete by Date Range:</label>
+                                <label for="deleteByDateToggle">📅 Delete By Date:</label>
                                 <input type="checkbox" id="deleteByDateToggle">
                             </div>
                         </div>
                         <div class="date-range" id="dateRange" style="display:none;">
+                            <label for="fromDate">From:</label>
                             <input type="date" id="fromDate">
-                            <label for="toDate">To</label>
+                            <label for="toDate">To:</label>
                             <input type="date" id="toDate">
                         </div>
                     </div>
@@ -1152,6 +1153,10 @@
                                     
                                     <div class="edit-form">
                                         <div class="edit-datetime-input">
+                                            <div class="edit-date-section">
+                                                <label for="editDate${date}_${originalIndex}">📅 Date:</label>
+                                                <input type="date" class="edit-date-input" value="${activity.date}" id="editDate${date}_${originalIndex}">
+                                            </div>
                                             <div class="edit-time-section">
                                                 <label for="editTime${date}_${originalIndex}">🕐 Time:</label>
                                                 <input type="time" class="edit-time-input" value="${activity.time}" id="editTime${date}_${originalIndex}">
@@ -1459,56 +1464,88 @@
         function saveEdit(date, index) {
             if (!activities[date] || !activities[date][index]) return;
             
+            const newDate = document.getElementById(`editDate${date}_${index}`).value;
             const newTime = document.getElementById(`editTime${date}_${index}`).value;
             const newText = document.getElementById(`editText${date}_${index}`).value.trim();
             const newAlarm = document.getElementById(`editAlarm${date}_${index}`).checked;
             
-            if (!newTime || !newText) {
-                alert('Please fill in both time and activity text.');
+            if (!newDate || !newTime || !newText) {
+                alert('Please fill in date, time, and activity text.');
                 return;
             }
             
+            const newStorageDate = formatDate(new Date(newDate + 'T00:00:00'));
+            
             const originalActivity = activities[date][index];
             const originalDate = originalActivity.date || convertStorageDateToISO(date);
-            
-            const conflictIndex = activities[date].findIndex((activity, i) => 
-                i !== index && activity.time === newTime
-            );
-            
-            if (conflictIndex !== -1) {
-                if (!confirm('An activity already exists at this time. Do you want to merge them?')) {
-                    return;
+
+            if (date === newStorageDate) {
+                const conflictIndex = activities[date].findIndex((activity, i) => 
+                    i !== index && activity.time === newTime
+                );
+
+                if (conflictIndex !== -1) {
+                    if (!confirm('An activity already exists at this time. Do you want to merge them?')) {
+                        return;
+                    }
+                    activities[date][conflictIndex].text += '\n' + newText;
+                    if (newAlarm) {
+                        activities[date][conflictIndex].alarm = true;
+                        activities[date][conflictIndex].date = newDate;
+                    }
+                    activities[date].splice(index, 1);
+                } else {
+                    activities[date][index].time = newTime;
+                    activities[date][index].text = newText;
+                    activities[date][index].alarm = newAlarm;
+                    activities[date][index].date = newDate;
                 }
-                activities[date][conflictIndex].text += '\n' + newText;
-                if (newAlarm) {
-                    activities[date][conflictIndex].alarm = true;
-                    activities[date][conflictIndex].date = originalDate;
-                }
-                activities[date].splice(index, 1);
             } else {
-                activities[date][index].time = newTime;
-                activities[date][index].text = newText;
-                activities[date][index].alarm = newAlarm;
-                activities[date][index].date = originalDate;
+                // Moving activity to a new date
+                if (!activities[newStorageDate]) {
+                    activities[newStorageDate] = [];
+                }
+                
+                const conflictIndex = activities[newStorageDate].findIndex((activity) => activity.time === newTime);
+                
+                if (conflictIndex !== -1) {
+                    if (!confirm('An activity already exists at the new time on the new date. Do you want to merge them?')) {
+                        return;
+                    }
+                    activities[newStorageDate][conflictIndex].text += '\n' + newText;
+                    if (newAlarm) {
+                        activities[newStorageDate][conflictIndex].alarm = true;
+                        activities[newStorageDate][conflictIndex].date = newDate;
+                    }
+                } else {
+                    activities[newStorageDate].push({
+                        time: newTime,
+                        text: newText,
+                        alarm: newAlarm,
+                        date: newDate
+                    });
+                }
+
+                activities[date].splice(index, 1);
+                if (activities[date].length === 0) {
+                    delete activities[date];
+                }
             }
             
-            activities[date].forEach(activity => delete activity.editing);
-            
-            activities[date].sort((a, b) => a.time.localeCompare(b.time));
+            Object.keys(activities).forEach(d => {
+                activities[d].forEach(activity => delete activity.editing);
+                activities[d].sort((a, b) => a.time.localeCompare(b.time));
+            });
             
             saveToStorage();
             displayActivities();
             
-            if (newAlarm && originalDate) {
-                setupAlarmsForActivity(date, newTime, newText, originalDate);
-            } else {
-                const activityId = `${date}_${newTime}`;
-                if (alarmTimers.has(activityId)) {
-                    alarmTimers.get(activityId).forEach(timer => clearTimeout(timer));
-                    alarmTimers.delete(activityId);
-                }
+            // Re-setup alarms for the edited/moved activity
+            if (newAlarm) {
+                setupAlarmsForActivity(newStorageDate, newTime, newText, newDate);
             }
         }
+
 
         function handleDeleteActivities() {
             const deletePastToggle = document.getElementById('deletePastToggle');
