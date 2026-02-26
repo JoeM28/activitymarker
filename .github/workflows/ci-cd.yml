@@ -77,22 +77,4 @@ jobs:
           echo "Deploying to production..."
           echo "Commit: ${{ github.sha }}"
           echo "Author: ${{ github.actor }}"
-  ```
-
----
-
-## How to Use This
-
-  **In IntelliJ:**
-  
-  1. **Open** `.github/workflows/ci-cd.yml`
-  2. **Select all text** (`Ctrl+A`)
-  3. **Delete**
-  4. **Paste the YAML above**
-  5. **Save** (`Ctrl+S`)
-  6. **Commit and push:**
-  ```
-  Ctrl+K
-Message: "Fix YAML syntax error"
-  Check ci-cd.yml
-  Commit and Push
+          echo "Message: ${{ github.event.head_commit.message }}"
