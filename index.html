@@ -1070,7 +1070,7 @@
         function formatDate(date) {
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
-            const year = String(date.getFullYear()).slice(-2);
+            const year = String(date.getFullYear());
             return `${month}/${day}/${year}`;
         }
 
@@ -1236,9 +1236,9 @@
         function displayActivities(searchTerm = '') {
             const activitiesList = document.getElementById('activitiesList');
             const allDates = Object.keys(activities).sort((a, b) => {
-                const dateA = new Date('20' + a.split('/')[2], a.split('/')[0] - 1, a.split('/')[1]);
-                const dateB = new Date('20' + b.split('/')[2], b.split('/')[0] - 1, b.split('/')[1]);
-                return dateA - dateB;
+                const dateA = new Date(a.split('/')[2], a.split('/')[0] - 1, a.split('/')[1]);
+                const dateB = new Date(b.split('/')[2], b.split('/')[0] - 1, b.split('/')[1]);
+                return dateB - dateA;
             });
             
             if (allDates.length === 0) {
@@ -1397,7 +1397,7 @@
         function convertStorageDateToISO(storageDate) {
             try {
                 const [month, day, year] = storageDate.split('/');
-                const fullYear = '20' + year;
+                const fullYear = year;
                 return `${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
             } catch (e) {
                 return null;
@@ -1701,10 +1701,10 @@
             const formatDateKey = (dateObj) => {
                 const month = String(dateObj.getMonth() + 1).padStart(2, '0');
                 const day = String(dateObj.getDate()).padStart(2, '0');
-                const year = String(dateObj.getFullYear()).slice(-2);
+                const year = String(dateObj.getFullYear());
                 return `${month}/${day}/${year}`;
             };
-            
+
             let dateCursor = new Date(1970, 0, 1); // Start from a very old date
             let deleted = false;
             while (dateCursor <= yesterday) {
@@ -1744,7 +1744,7 @@
             const formatDateKey = (dateObj) => {
                 const month = String(dateObj.getMonth() + 1).padStart(2, '0');
                 const day = String(dateObj.getDate()).padStart(2, '0');
-                const year = String(dateObj.getFullYear()).slice(-2);
+                const year = String(dateObj.getFullYear());
                 return `${month}/${day}/${year}`;
             };
 
